@@ -1,6 +1,5 @@
 package main;
 
-import model.Orden;
 import processing.core.PApplet;
 
 public class Particula {
@@ -10,17 +9,50 @@ public class Particula {
 	int x, y;
 	String color;
 	PApplet app;
-
+	
+	private int r , g ,b;
 
 	public Particula(String name, PApplet app, int x, int y, String color) {
 		this.app = app;
 		this.name = name;
 		this.x = x;
 		this.y = y;
-		this.color = color;
+		this.color = color;	
 		
+		this.r = r;
+		this.g = g;
+		this.b = b;
+
 	}
 
+	public void drawParticulas(Particula p) {
+		switch (color) {
+		case "ROJO":
+			r = 255;
+			g = 0;
+			b = 0;
+
+			break;
+
+		case "VERDE":
+			r = 0;
+			g = 255;
+			b = 0;
+			break;
+
+		case "AZUL":
+			r = 0;
+			g = 0;
+			b = 255;
+			break;
+		default:
+
+		}
+
+		app.fill(r, g, b);
+		app.ellipse(p.getX(),p.getY(),50,50);
+	}
+	
 	public String getName() {
 		return name;
 	}
