@@ -31,22 +31,11 @@ public class Main extends PApplet {
 	private BufferedWriter writer;
 	private BufferedReader reader;
 	
-	private String color;
-	private int r, g, b, x, y;
-	Particula particula;
-	
 	private ArrayList<Particula> arrayPart;
 
 
 	public void setup() {
-		r = 0;
-		g = 0;
-		b = 0;
-		x = 0;
-		y = 0;
-		color = " ";
 		arrayPart = new ArrayList<Particula>();
-		particula = new Particula("name", this, x, y, "color");
 		initServer();
 	}
 
@@ -117,40 +106,15 @@ public class Main extends PApplet {
 
 	// Se dibujan, pero llamo este metodo arriba en el for que recorre
 	public void drawParticulas(Particula p) {
-		particula.drawParticulas(p);
-		/*switch (color) {
-		case "ROJO":
-			r = 255;
-			g = 0;
-			b = 0;
-
-			break;
-
-		case "VERDE":
-			r = 0;
-			g = 255;
-			b = 0;
-			break;
-
-		case "AZUL":
-			r = 0;
-			g = 0;
-			b = 255;
-			break;
-		default:
-
-		}
-
-		fill(r, g, b);
-		ellipse(p.getX(),p.getY(),50,50);*/
+		p.drawParticulas(p);
 	}
 	
 	//Para que muestre el nombre si me paro dentro de una particula
 	public void showName() {
 		for (int i = 0; i < arrayPart.size(); i++) {
 			if(dist(mouseX,mouseY,arrayPart.get(i).getX(),arrayPart.get(i).getY())<25) {
-				fill(0,0,255);
-				text("Soy del grupo:" + arrayPart.get(i).getName(),arrayPart.get(i).getX(),arrayPart.get(i).getY());
+				fill(0);
+				text("Grupo:" + arrayPart.get(i).getName(),arrayPart.get(i).getX(),arrayPart.get(i).getY());
 			}
 		}
 	}

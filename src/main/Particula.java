@@ -50,6 +50,7 @@ public class Particula {
 		}
 
 		app.fill(r, g, b);
+		app.noStroke();
 		app.ellipse(p.getX(),p.getY(),50,50);
 	}
 	
