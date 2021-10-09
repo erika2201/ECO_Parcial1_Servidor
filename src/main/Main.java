@@ -18,19 +18,6 @@ import processing.core.PApplet;
 import processing.core.PVector;
 
 public class Main extends PApplet {
-	private Socket socket;
-	private BufferedWriter writer;
-	private BufferedReader reader;
-	
-	private String name;
-	private int number;
-	private int x;
-	private int y;
-	private String color;
-	
-	private int r, g, b;
-	private ArrayList<Orden> cantidad;
-	
 	public static void main(String[] args) {
 		PApplet.main("main.Main");
 
@@ -40,50 +27,29 @@ public class Main extends PApplet {
 		size(1200, 700);
 	}
 
+	private Socket socket;
+	private BufferedWriter writer;
+	private BufferedReader reader;
+	
+	private String color;
+	private int r, g, b;
+
+	private ArrayList<Particula> arrayPart;
+
+
 	public void setup() {
-		cantidad = new ArrayList<Orden>();
+		r = 0;
+		g = 0;
+		b = 0;
+		color = " ";
+		arrayPart = new ArrayList<Particula>();
 		initServer();
-		
-		name = "";
-		number = 0;
-		x = 250;
-		y = 250;
-		color = "";
-		
-		r=0;
-		g=0;
-		b=0;
 	}
 
 	public void draw() {
 		background(255);
-		switch (color) {
-		case "ROJO":
-			r=255;
-			g=0;
-			b=0;
-			
-			break;
+		drawParticulas2();
 
-		case "VERDE":
-			r=0;
-			g=255;
-			b=0;
-			break;
-			
-		case "AZUL":
-			r=0;
-			g=0;
-			b=255;
-			break;
-		default:
-
-		}
-			
-		for (int i = 0; i < cantidad.size(); i++) {
-			fill(r,g,b);
-			ellipse(x, y, 50, 50);
-		}
 	}
 
 	public void initServer() {
@@ -111,11 +77,12 @@ public class Main extends PApplet {
 							System.out.println("Esperando mensaje....");
 							String line = reader.readLine();
 							System.out.println("Recibido: " + line);
-							
+
 							Gson gson = new Gson();
-							Orden obj = gson.fromJson(line, Orden.class); //deserializaciòn
-							//cambiar luego
-							cantidad.add(obj);
+							Orden obj = gson.fromJson(line, Orden.class); // deserializaciòn
+
+							// cambiar luego
+							createParticulas(obj.getName(), obj.getNumber(), obj.getX(), obj.getY(), obj.getColor());
 
 						}
 
@@ -126,6 +93,50 @@ public class Main extends PApplet {
 				}
 
 		).start();
+	}
+
+	// Un for que recorre el array de las particulas, recibe los parametros de la
+	// clase PARTCIULA
+	public void createParticulas(String name, int numPart, int x, int y, String color) {
+		for (int i = 0; i < numPart; i++) {
+			Particula p = new Particula(name, this, x, y, color);
+			arrayPart.add(p);
+		}
+	}
+
+	public void drawParticulas2() {
+		for (int i = 0; i < arrayPart.size(); i++) {
+			drawParticulas(arrayPart.get(i));
+		}
+	}
+
+	// Se dibujan, pero llamo este metodo arriba en el for que recorre
+	public void drawParticulas(Particula p) {
+		switch (color) {
+		case "ROJO":
+			r = 255;
+			g = 0;
+			b = 0;
+
+			break;
+
+		case "VERDE":
+			r = 0;
+			g = 255;
+			b = 0;
+			break;
+
+		case "AZUL":
+			r = 0;
+			g = 0;
+			b = 255;
+			break;
+		default:
+
+		}
+
+		fill(r, g, b);
+		ellipse(p.getX(),p.getY(),50,50);
 	}
 
 	public void sendMessage(String msg) {
@@ -141,4 +152,3 @@ public class Main extends PApplet {
 		}).start();
 	}
 }
-	

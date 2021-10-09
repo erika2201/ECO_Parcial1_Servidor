@@ -2,7 +2,7 @@ package model;
 
 public class Orden {
 
-    String name;
+	String name;
     int number;
     int x, y;
     String color;
