@@ -14,8 +14,8 @@ import java.util.ArrayList;
 import com.google.gson.Gson;
 
 import model.Orden;
+import model.Particula;
 import processing.core.PApplet;
-import processing.core.PVector;
 
 public class Main extends PApplet {
 	public static void main(String[] args) {
@@ -33,22 +33,27 @@ public class Main extends PApplet {
 	
 	private ArrayList<Particula> arrayPart;
 
-
 	public void setup() {
 		arrayPart = new ArrayList<Particula>();
 		initServer();
 	}
 
 	public void draw() {
-		background(255);
-		drawParticulas2();
+		background(0);
+		drawMove();
+		title();
 		showName();
-
+	}
+	
+	public void title() {
+		fill(255);
+		textSize(18);
+		textAlign(CENTER);
+		text("Visualizador de partículas", width/2, 50);
 	}
 
 	public void initServer() {
 		new Thread(
-
 				() -> {
 					try {
 						// Paso 1: Esperar una conexion
@@ -77,20 +82,17 @@ public class Main extends PApplet {
 
 							// cambiar luego
 							createParticulas(obj.getName(), obj.getNumber(), obj.getX(), obj.getY(), obj.getColor());
-
 						}
 
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-				}
-
-		).start();
+				}).start();
 	}
 
-	// Un for que recorre el array de las particulas, recibe los parametros de la
-	// clase PARTCIULA
+	
+	// Inicio el for para crear particulas
 	public void createParticulas(String name, int numPart, int x, int y, String color) {
 		for (int i = 0; i < numPart; i++) {
 			Particula p = new Particula(name, this, x, y, color);
@@ -98,26 +100,53 @@ public class Main extends PApplet {
 		}
 	}
 
-	public void drawParticulas2() {
+	
+	//Dibujo las particulas, llamando los métodos de abajo
+	public void drawMove() {
+		int randomX;
+		int randomY;
 		for (int i = 0; i < arrayPart.size(); i++) {
+			randomX= (int) random (-10,900);
+			randomY= (int) random (-10,900);
 			drawParticulas(arrayPart.get(i));
+			dirRandom(arrayPart.get(i),randomX,randomY);
+			moveParticulas(arrayPart.get(i));
 		}
 	}
 
-	// Se dibujan, pero llamo este metodo arriba en el for que recorre
+	
+	// Llama el metodo dibujar de la clase particula
 	public void drawParticulas(Particula p) {
-		p.drawParticulas(p);
+		p.draw(p);
 	}
+	
+	//Llama el metodo mover de la clase particula
+	public void moveParticulas(Particula p) {
+		if (!p.getPause()) {
+			p.move();
+		}
+	}
+	
+	//Llama al metodo dirRandom de la clase particula
+	public void dirRandom (Particula p, int randomX, int randomY) {
+	p.dirRandom(p, randomX, randomY);
+	}
+	
 	
 	//Para que muestre el nombre si me paro dentro de una particula
 	public void showName() {
 		for (int i = 0; i < arrayPart.size(); i++) {
 			if(dist(mouseX,mouseY,arrayPart.get(i).getX(),arrayPart.get(i).getY())<25) {
-				fill(0);
+				//nombre
+				fill(255);
 				text("Grupo:" + arrayPart.get(i).getName(),arrayPart.get(i).getX(),arrayPart.get(i).getY());
+				//que se paren
+				arrayPart.get(i).setPause(true);
+			}else {
+				arrayPart.get(i).setPause(false);
 			}
 		}
-	}
+	}	
 
 	public void sendMessage(String msg) {
 		new Thread(() -> {
